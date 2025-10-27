@@ -2,6 +2,7 @@ package com.apolodevsystem.todoperformance
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -18,6 +19,8 @@ import com.apolodevsystem.todoperformance.ui.theme.ToDoPerformanceTheme
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
@@ -31,15 +34,21 @@ fun TaskScreenComponent(navController: NavController) {
 
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
             Column(Modifier.fillMaxSize().padding(innerPadding)) {
-                Text("Create Task")
+                Text("Create Task", fontSize = 32.sp)
+
+                Spacer(Modifier.padding(4.dp))
 
                 TextField(value = title, onValueChange = {
                     title = it
                 }, label = { Text("Title") })
 
+                Spacer(Modifier.padding(4.dp))
+
                 TextField(value = description, onValueChange = {
                     description = it
                 }, label = { Text("Description") })
+
+                Spacer(Modifier.padding(4.dp))
 
                 Row(Modifier, verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(isCompleted, onCheckedChange = {
@@ -47,7 +56,7 @@ fun TaskScreenComponent(navController: NavController) {
                     })
                     Text("Concluída")
                 }
-
+                Spacer(Modifier.padding(4.dp))
                 Button({
                     navController.popBackStack()
                 }) {

@@ -18,7 +18,7 @@ import com.apolodevsystem.todoperformance.ui.theme.ToDoPerformanceTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TasksListScreenComponent(navController: NavController) {
+fun TasksListScreenComponent(navController: NavController, taskViewModel: TaskViewModel) {
     ToDoPerformanceTheme {
         Scaffold(modifier = Modifier.fillMaxSize(), {
             TopAppBar(
@@ -36,8 +36,9 @@ fun TasksListScreenComponent(navController: NavController) {
             }
 
         }) { innerPadding ->
+            val tasks = taskViewModel.getTasks()
             ItemsList(
-                name = "Android",
+                tasks,
                 modifier = Modifier.padding(innerPadding)
             )
         }
@@ -45,10 +46,12 @@ fun TasksListScreenComponent(navController: NavController) {
 }
 
 @Composable
-fun ItemsList(name: String, modifier: Modifier = Modifier) {
+fun ItemsList(tasks: List<TaskModel>, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier.fillMaxSize()) {
-        items(1000) { index ->
-            Text("Message $index")
+        tasks.forEach {
+            item {
+                Text("${it.title} - ${it.description} - Completed: ${it.isCompleted}")
+            }
         }
     }
 }
@@ -57,6 +60,6 @@ fun ItemsList(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     ToDoPerformanceTheme {
-        ItemsList("Android")
+        ItemsList(listOf())
     }
 }
