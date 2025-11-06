@@ -23,9 +23,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import org.koin.android.ext.android.inject
+import org.koin.compose.koinInject
+import kotlin.getValue
 
 @Composable
-fun TaskScreenComponent(navController: NavController) {
+fun TaskScreenComponent(navController: NavController, taskViewModel : TaskViewModel) {
     ToDoPerformanceTheme {
 
         var title by remember { mutableStateOf("") }
@@ -58,6 +61,13 @@ fun TaskScreenComponent(navController: NavController) {
                 }
                 Spacer(Modifier.padding(4.dp))
                 Button({
+                    taskViewModel.addTask(
+                        TaskModel(
+                            title,
+                            description,
+                            isCompleted
+                        )
+                    )
                     navController.popBackStack()
                 }) {
                     Text("Salvar")
@@ -71,5 +81,6 @@ fun TaskScreenComponent(navController: NavController) {
 @Composable
 fun TaskScreenComponentPreview() {
     val navController = rememberNavController()
-    TaskScreenComponent(navController)
+    val taskViewModel = TaskViewModel()
+    TaskScreenComponent(navController, taskViewModel)
 }
