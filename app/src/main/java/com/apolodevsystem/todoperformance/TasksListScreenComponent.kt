@@ -1,10 +1,13 @@
 package com.apolodevsystem.todoperformance
 
+import android.R.attr.onClick
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -20,6 +24,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.tooling.preview.Preview
@@ -79,7 +84,7 @@ fun ItemsList(tasks: List<TaskModel>, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier.fillMaxSize(), contentPadding = PaddingValues(8.dp)) {
         tasks.forEach {
             item {
-                Column(
+                Row(
                     Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
@@ -87,10 +92,20 @@ fun ItemsList(tasks: List<TaskModel>, modifier: Modifier = Modifier) {
                             Log.d("TAG", "ItemsList: ${it.title}")
                         }
                 ) {
-                    Text("${it.title}")
-                    Text("${it.description}")
-                    Text("Completed: ${it.isCompleted}")
+                    Column {
+                        Text("${it.title}")
+                        Text("${it.description}")
+                        Text("Completed: ${it.isCompleted}")
+                    }
+
+                    Button(
+                        onClick = {
+                        Log.d("TAG", "ItemsList: Clicked ${it.title}")
+                    }) {
+                        Text("Filled")
+                    }
                 }
+
             }
         }
     }
@@ -100,6 +115,10 @@ fun ItemsList(tasks: List<TaskModel>, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     ToDoPerformanceTheme {
-        ItemsList(listOf())
+        ItemsList(listOf(
+            TaskModel("Task 1", "Description for Task 1", false),
+            TaskModel("Task 2", "Description for Task 2", true),
+            TaskModel("Task 3", "Description for Task 3", false),
+        ))
     }
 }
