@@ -12,21 +12,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -57,7 +51,6 @@ fun TasksListScreenComponent(navController: NavController, taskViewModel: TaskVi
             val state = taskViewModel.tasksFlow.collectAsStateWithLifecycle().value
             when (state) {
                 is TasksState.Loading -> {
-                    // You can show a loading indicator here if needed
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -72,7 +65,9 @@ fun TasksListScreenComponent(navController: NavController, taskViewModel: TaskVi
                     ItemsList(
                         tasks,
                         modifier = Modifier.padding(innerPadding)
-                    )
+                    ) {
+                        taskViewModel.removeTask(it)
+                    }
                 }
             }
         }
@@ -80,8 +75,13 @@ fun TasksListScreenComponent(navController: NavController, taskViewModel: TaskVi
 }
 
 @Composable
-fun ItemsList(tasks: List<TaskModel>, modifier: Modifier = Modifier) {
+fun ItemsList(
+    tasks: List<TaskModel>,
+    modifier: Modifier = Modifier,
+    itemClicked: (TaskModel) -> Unit
+) {
     LazyColumn(modifier = modifier.fillMaxSize(), contentPadding = PaddingValues(8.dp)) {
+
         tasks.forEach {
             item {
                 Row(
@@ -100,8 +100,8 @@ fun ItemsList(tasks: List<TaskModel>, modifier: Modifier = Modifier) {
 
                     Button(
                         onClick = {
-                        Log.d("TAG", "ItemsList: Clicked ${it.title}")
-                    }) {
+                            itemClicked(it)
+                        }) {
                         Text("Filled")
                     }
                 }
@@ -115,10 +115,14 @@ fun ItemsList(tasks: List<TaskModel>, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     ToDoPerformanceTheme {
-        ItemsList(listOf(
-            TaskModel("Task 1", "Description for Task 1", false),
-            TaskModel("Task 2", "Description for Task 2", true),
-            TaskModel("Task 3", "Description for Task 3", false),
-        ))
+        ItemsList(
+            listOf(
+                TaskModel("Task 1", "Description for Task 1", false),
+                TaskModel("Task 2", "Description for Task 2", true),
+                TaskModel("Task 3", "Description for Task 3", false),
+            )
+        ) {
+
+        }
     }
 }

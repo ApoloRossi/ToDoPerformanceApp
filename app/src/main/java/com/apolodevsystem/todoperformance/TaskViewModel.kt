@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apolodevsystem.todoperformance.states.TasksState
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,15 +23,21 @@ class TaskViewModel : ViewModel() {
         viewModelScope.launch {
             delay(1000) // Simulating network delay
 
-            _tasks.value = TasksState.Success(tasks)
+            _tasks.value = TasksState.Success(internalTasks.toList())
         }
     }
 
     fun addTask(taskModel: TaskModel) {
-        tasks.add(taskModel)
+        internalTasks.add(taskModel)
+        _tasks.value = TasksState.Success(internalTasks.toList())
     }
 
-    var tasks = mutableListOf(
+    fun removeTask(taskModel : TaskModel) {
+        internalTasks.remove(taskModel)
+        _tasks.value = TasksState.Success(internalTasks.toList())
+    }
+
+    var internalTasks = mutableListOf(
         TaskModel("Task 1", "Description for Task 1", false),
         TaskModel("Task 2", "Description for Task 2", true),
         TaskModel("Task 3", "Description for Task 3", false),
