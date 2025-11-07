@@ -7,8 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.apolodevsystem.todoperformance.routes.Routes
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,11 +18,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             val taskViewModel : TaskViewModel by inject()
             val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = "taskList") {
-                composable ("taskList") {
+            NavHost(navController = navController, startDestination = Routes.TaskList.route) {
+                composable (Routes.TaskList.route) {
                     TasksListScreenComponent(navController, taskViewModel)
                 }
-                composable ("taskScreen") {
+                composable (Routes.TaskScreen.route) {
                     TaskScreenComponent(navController, taskViewModel)
                 }
             }
