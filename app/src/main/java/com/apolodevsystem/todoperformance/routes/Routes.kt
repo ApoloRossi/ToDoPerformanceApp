@@ -1,17 +1,15 @@
 package com.apolodevsystem.todoperformance.routes
 
-sealed class Routes {
+import com.apolodevsystem.todoperformance.TaskModel
 
-    class TaskList() : Routes() {
-        companion object {
-            const val route = "taskList"
-        }
-    }
+sealed class Routes(val route : String) {
 
-    class TaskScreen() : Routes() {
-        companion object {
-            const val route = "taskScreen"
-        }
+    data object TaskList : Routes("taskList")
+
+    data object TaskScreen : Routes("taskScreen") {
+        const val TASK_ID_ARG = "taskId"
+        val routeWithArgs = "$route/{${TASK_ID_ARG}}"
+        fun buildRoute(taskId: Int) = "$route/$taskId"
     }
 
 }

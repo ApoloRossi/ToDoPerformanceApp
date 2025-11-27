@@ -23,17 +23,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import org.koin.android.ext.android.inject
-import org.koin.compose.koinInject
-import kotlin.getValue
+import kotlin.random.Random
 
 @Composable
-fun TaskScreenComponent(navController: NavController, taskViewModel : TaskViewModel) {
+fun TaskScreenComponent(taskId : Int, navController: NavController, taskViewModel : TaskViewModel) {
     ToDoPerformanceTheme {
 
         var title by remember { mutableStateOf("") }
         var description by remember { mutableStateOf("") }
         var isCompleted by remember { mutableStateOf(false) }
+
+        if (taskId > 0) {
+            taskViewModel.getTaskById(taskId)?.let { task ->
+                title = task.title
+                description = task.description
+                isCompleted = task.isCompleted
+            }
+        }
 
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
             Column(Modifier.fillMaxSize().padding(innerPadding)) {
@@ -63,6 +69,7 @@ fun TaskScreenComponent(navController: NavController, taskViewModel : TaskViewMo
                 Button({
                     taskViewModel.addTask(
                         TaskModel(
+                            Random(Int.MAX_VALUE).nextInt(1000),
                             title,
                             description,
                             isCompleted
@@ -82,5 +89,5 @@ fun TaskScreenComponent(navController: NavController, taskViewModel : TaskViewMo
 fun TaskScreenComponentPreview() {
     val navController = rememberNavController()
     val taskViewModel = TaskViewModel()
-    TaskScreenComponent(navController, taskViewModel)
+    TaskScreenComponent(1, navController, taskViewModel)
 }

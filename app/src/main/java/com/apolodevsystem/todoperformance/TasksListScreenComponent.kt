@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.apolodevsystem.todoperformance.routes.Routes
 import com.apolodevsystem.todoperformance.states.TasksState
 import com.apolodevsystem.todoperformance.ui.theme.ToDoPerformanceTheme
 
@@ -47,7 +48,7 @@ fun TasksListScreenComponent(navController: NavController, taskViewModel: TaskVi
             )
         }, floatingActionButton = {
             FloatingActionButton (onClick = {
-                navController.navigate("taskScreen")
+                navController.navigate(Routes.TaskScreen.route)
             }) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -72,7 +73,8 @@ fun TasksListScreenComponent(navController: NavController, taskViewModel: TaskVi
                     val tasks = state.tasks
                     ItemsList(
                         tasks,
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.padding(innerPadding),
+                        navController = navController
                     ) {
                         taskViewModel.removeTask(it)
                     }
@@ -86,31 +88,32 @@ fun TasksListScreenComponent(navController: NavController, taskViewModel: TaskVi
 fun ItemsList(
     tasks: List<TaskModel>,
     modifier: Modifier = Modifier,
+    navController: NavController,
     itemClicked: (TaskModel) -> Unit
 ) {
     LazyColumn(modifier = modifier.fillMaxSize(), contentPadding = PaddingValues(8.dp)) {
-        tasks.forEach {
+        tasks.forEach { task ->
             item {
                 Row(
                     Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
                         .clickable {
-                            Log.d("TAG", "ItemsList: ${it.title}")
+                            navController.navigate(Routes.TaskScreen.buildRoute(task.id))
                         }
                 ) {
                     Column(
                         modifier = Modifier.weight(1f)
                     ) {
-                        Text("${it.title}")
-                        Text("${it.description}")
-                        Text("Completed: ${it.isCompleted}")
+                        Text(task.title)
+                        Text(task.description)
+                        Text("Completed: ${task.isCompleted}")
                     }
 
                     Button(
                         modifier = Modifier.align(Alignment.CenterVertically),
                         onClick = {
-                            itemClicked(it)
+                            itemClicked(task)
                         }) {
                         Text("Remover")
                     }
@@ -149,10 +152,11 @@ fun GreetingPreview() {
         ToDoPerformanceTheme {
             ItemsList(
                 listOf(
-                    TaskModel("Task 1", "Description for Task 1", false),
-                    TaskModel("Task 2", "Description for Task 2", true),
-                    TaskModel("Task 3", "Description for Task 3", false),
-                )
+                    TaskModel(1, "Task 1", "Description for Task 1", false),
+                    TaskModel(2, "Task 2", "Description for Task 2", true),
+                    TaskModel(3, "Task 3", "Description for Task 3", false),
+                ),
+                navController = navController
             ) {
 
             }
