@@ -17,6 +17,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
+
         setContent {
             val taskViewModel: TaskViewModel by inject()
             val navController = rememberNavController()

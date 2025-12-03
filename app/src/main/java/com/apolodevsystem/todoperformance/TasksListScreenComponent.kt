@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -32,12 +33,12 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.apolodevsystem.todoperformance.routes.Routes
 import com.apolodevsystem.todoperformance.states.TasksState
-import com.apolodevsystem.todoperformance.ui.theme.ToDoPerformanceTheme
+import com.apolodevsystem.todoperformance.ui.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TasksListScreenComponent(navController: NavController, taskViewModel: TaskViewModel) {
-    ToDoPerformanceTheme {
+    AppTheme {
         Scaffold(modifier = Modifier.fillMaxSize(), {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -94,31 +95,32 @@ fun ItemsList(
     LazyColumn(modifier = modifier.fillMaxSize(), contentPadding = PaddingValues(8.dp)) {
         tasks.forEach { task ->
             item {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                        .clickable {
-                            navController.navigate(Routes.TaskScreen.buildRoute(task.id))
-                        }
-                ) {
-                    Column(
-                        modifier = Modifier.weight(1f)
+                Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                            .clickable {
+                                navController.navigate(Routes.TaskScreen.buildRoute(task.id))
+                            }
                     ) {
-                        Text(task.title)
-                        Text(task.description)
-                        Text("Completed: ${task.isCompleted}")
-                    }
+                        Column(
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(task.title)
+                            Text(task.description)
+                            Text("Completed: ${task.isCompleted}")
+                        }
 
-                    Button(
-                        modifier = Modifier.align(Alignment.CenterVertically),
-                        onClick = {
-                            itemClicked(task)
-                        }) {
-                        Text("Remover")
+                        Button(
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                            onClick = {
+                                itemClicked(task)
+                            }) {
+                            Text("Remover")
+                        }
                     }
                 }
-                HorizontalDivider(thickness = 2.dp)
             }
         }
     }
@@ -149,7 +151,7 @@ fun GreetingPreview() {
         }
 
     }) { innerPadding ->
-        ToDoPerformanceTheme {
+        AppTheme {
             ItemsList(
                 listOf(
                     TaskModel(1, "Task 1", "Description for Task 1", false),

@@ -16,7 +16,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.apolodevsystem.todoperformance.ui.theme.ToDoPerformanceTheme
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -27,12 +26,13 @@ import androidx.navigation.compose.rememberNavController
 import kotlin.random.Random
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.apolodevsystem.todoperformance.ui.theme.AppTheme
 import kotlinx.coroutines.delay
 import org.koin.ext.clearQuotes
 
 @Composable
 fun TaskScreenComponent(taskId : Int, navController: NavController, taskViewModel : TaskViewModel) {
-    ToDoPerformanceTheme {
+    AppTheme {
 
         var title by remember { mutableStateOf("") }
         var description by remember { mutableStateOf("") }

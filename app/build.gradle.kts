@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.dynamic.features.fragment)
     implementation(libs.kotlin.serialization.json)
+    implementation(libs.google.fonts)
 
     implementation(libs.koin.core)
     implementation(libs.koin.compose)

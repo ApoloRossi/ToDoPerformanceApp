@@ -13,7 +13,7 @@ material = "1.10.0"
 activity = "1.11.0"
 navVersion = "2.9.5"
 koin-bom = "4.1.1"
-material-icons-extended = "1.7.8"
+fonts-version = "1.9.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -44,6 +44,7 @@ koin-compose = { module = "io.insert-koin:koin-androidx-compose"}
 koin-navigation = { module = "io.insert-koin:koin-androidx-compose-navigation", version.ref = "koin-bom" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin-bom" }
 koin-core-coroutines = { module = "io.insert-koin:koin-core-coroutines", version.ref = "koin-bom" }
+google-fonts = {module = "androidx.compose.ui:ui-text-google-fonts", version.ref = "fonts-version" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
