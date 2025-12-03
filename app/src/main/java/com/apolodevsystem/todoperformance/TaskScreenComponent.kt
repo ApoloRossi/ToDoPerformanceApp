@@ -11,6 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -24,6 +25,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import kotlin.random.Random
+import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.delay
+import org.koin.ext.clearQuotes
 
 @Composable
 fun TaskScreenComponent(taskId : Int, navController: NavController, taskViewModel : TaskViewModel) {
@@ -33,11 +38,28 @@ fun TaskScreenComponent(taskId : Int, navController: NavController, taskViewMode
         var description by remember { mutableStateOf("") }
         var isCompleted by remember { mutableStateOf(false) }
 
-        if (taskId > 0) {
-            taskViewModel.getTaskById(taskId)?.let { task ->
-                title = task.title
-                description = task.description
-                isCompleted = task.isCompleted
+        var taskState : TaskModel? = null
+
+        if(taskId > 0 ) {
+            val taskFlowState = taskViewModel.taskFlow.collectAsStateWithLifecycle()
+            taskState = taskFlowState.value
+        }
+
+        LaunchedEffect(taskId) {
+            if (taskId > 0) {
+                taskViewModel.getTaskById(taskId)
+            }
+        }
+
+        LaunchedEffect(taskState) {
+            if(taskState != null) {
+                title = taskState.title
+                description = taskState.description
+                isCompleted = taskState.isCompleted
+            } else {
+                title = ""
+                description = ""
+                isCompleted = false
             }
         }
 
@@ -69,7 +91,7 @@ fun TaskScreenComponent(taskId : Int, navController: NavController, taskViewMode
                 Button({
                     taskViewModel.addTask(
                         TaskModel(
-                            Random(Int.MAX_VALUE).nextInt(1000),
+                            Random.nextInt(1000, Int.MAX_VALUE),
                             title,
                             description,
                             isCompleted

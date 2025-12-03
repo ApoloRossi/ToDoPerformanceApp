@@ -14,12 +14,20 @@ class TaskViewModel : ViewModel() {
     private var _tasks : MutableStateFlow<TasksState> = MutableStateFlow(TasksState.Loading)
     var tasksFlow : StateFlow<TasksState> = _tasks.asStateFlow()
 
+    private var _task : MutableStateFlow<TaskModel?> = MutableStateFlow(null)
+    var taskFlow : StateFlow<TaskModel?> = _task.asStateFlow()
+
     init {
         getTasks()
     }
 
-    fun getTaskById(taskId : Int) : TaskModel? {
-        return internalTasks.find { it.id == taskId }
+    fun getTaskById(taskId : Int) {
+        _task.value = null
+        viewModelScope.launch {
+            delay(100)
+            val task = internalTasks.find { it.id == taskId }
+            _task.value = task
+        }
     }
 
     private fun getTasks() {
