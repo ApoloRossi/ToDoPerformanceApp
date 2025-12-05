@@ -19,12 +19,19 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,6 +47,10 @@ import com.apolodevsystem.todoperformance.ui.theme.AppTheme
 @Composable
 fun TasksListScreenComponent(navController: NavController, taskViewModel: TaskViewModel) {
     AppTheme {
+
+        var showBottomSheet by remember { mutableStateOf(false) }
+        val sheetState = rememberModalBottomSheetState()
+
         Scaffold(modifier = Modifier.fillMaxSize(), {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -50,7 +61,7 @@ fun TasksListScreenComponent(navController: NavController, taskViewModel: TaskVi
             )
         }, floatingActionButton = {
             FloatingActionButton(onClick = {
-                navController.navigate(Routes.TaskScreen.route)
+                showBottomSheet = true
             }) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -79,6 +90,19 @@ fun TasksListScreenComponent(navController: NavController, taskViewModel: TaskVi
                         navController = navController
                     ) {
                         taskViewModel.removeTask(it)
+                    }
+                }
+            }
+
+            if(showBottomSheet) {
+                ModalBottomSheet(
+                    onDismissRequest = {
+                        showBottomSheet = false
+                    },
+                    sheetState = sheetState
+                ) {
+                    TaskScreenComponent(0, taskViewModel) {
+                        showBottomSheet = false
                     }
                 }
             }

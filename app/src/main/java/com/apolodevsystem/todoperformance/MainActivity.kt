@@ -32,13 +32,15 @@ class MainActivity : ComponentActivity() {
                     )
                 ) { backStack ->
                     val taskId = backStack.arguments?.getString("taskId")?.toInt()?:0
-                    TaskScreenComponent(taskId, navController, taskViewModel)
+                    TaskScreenComponent(taskId, taskViewModel) {
+
+                    }
                 }
 
                 composable(
                     Routes.TaskScreen.route
                 ) {
-                    TaskScreenComponent(0, navController, taskViewModel)
+
                 }
             }
         }

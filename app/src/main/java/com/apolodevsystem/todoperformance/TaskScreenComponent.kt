@@ -1,5 +1,6 @@
 package com.apolodevsystem.todoperformance
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,26 +23,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import kotlin.random.Random
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.apolodevsystem.todoperformance.ui.theme.AppTheme
-import kotlinx.coroutines.delay
-import org.koin.ext.clearQuotes
 
 @Composable
-fun TaskScreenComponent(taskId : Int, navController: NavController, taskViewModel : TaskViewModel) {
+fun TaskScreenComponent(
+    taskId: Int,
+    taskViewModel: TaskViewModel,
+    onSave: () -> Unit
+) {
     AppTheme {
 
         var title by remember { mutableStateOf("") }
         var description by remember { mutableStateOf("") }
         var isCompleted by remember { mutableStateOf(false) }
 
-        var taskState : TaskModel? = null
+        var taskState: TaskModel? = null
 
-        if(taskId > 0 ) {
+        if (taskId > 0) {
             val taskFlowState = taskViewModel.taskFlow.collectAsStateWithLifecycle()
             taskState = taskFlowState.value
         }
@@ -53,7 +52,7 @@ fun TaskScreenComponent(taskId : Int, navController: NavController, taskViewMode
         }
 
         LaunchedEffect(taskState) {
-            if(taskState != null) {
+            if (taskState != null) {
                 title = taskState.title
                 description = taskState.description
                 isCompleted = taskState.isCompleted
@@ -65,7 +64,9 @@ fun TaskScreenComponent(taskId : Int, navController: NavController, taskViewMode
         }
 
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-            Column(Modifier.fillMaxSize().padding(16.dp)) {
+            Column(Modifier
+                .fillMaxSize()
+                .padding(16.dp)) {
                 Text("Create Task", fontSize = 32.sp)
 
                 Spacer(Modifier.padding(4.dp))
@@ -103,7 +104,7 @@ fun TaskScreenComponent(taskId : Int, navController: NavController, taskViewMode
                             isCompleted
                         )
                     )
-                    navController.popBackStack()
+                    onSave()
                 }) {
                     Text("Salvar")
                 }
@@ -112,10 +113,12 @@ fun TaskScreenComponent(taskId : Int, navController: NavController, taskViewMode
     }
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview
 @Composable
 fun TaskScreenComponentPreview() {
-    val navController = rememberNavController()
     val taskViewModel = TaskViewModel()
-    TaskScreenComponent(1, navController, taskViewModel)
+    TaskScreenComponent(1, taskViewModel) {
+
+    }
 }
