@@ -4,10 +4,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -64,34 +65,39 @@ fun TaskScreenComponent(taskId : Int, navController: NavController, taskViewMode
         }
 
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-            Column(Modifier.fillMaxSize().padding(innerPadding)) {
+            Column(Modifier.fillMaxSize().padding(16.dp)) {
                 Text("Create Task", fontSize = 32.sp)
 
                 Spacer(Modifier.padding(4.dp))
 
-                TextField(value = title, onValueChange = {
+                TextField(modifier = Modifier.fillMaxWidth(), value = title, onValueChange = {
                     title = it
-                }, label = { Text("Title") })
+                }, label = { Text("Título") })
 
                 Spacer(Modifier.padding(4.dp))
 
-                TextField(value = description, onValueChange = {
+                TextField(modifier = Modifier.fillMaxWidth(), value = description, onValueChange = {
                     description = it
-                }, label = { Text("Description") })
+                }, label = { Text("Descrição") })
 
                 Spacer(Modifier.padding(4.dp))
 
                 Row(Modifier, verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(isCompleted, onCheckedChange = {
-                        isCompleted = it
-                    })
-                    Text("Concluída")
+                    Switch(
+                        checked = isCompleted,
+                        onCheckedChange = {
+                            isCompleted = it
+                        }
+                    )
+
+                    Text(modifier = Modifier.padding(8.dp), text = "Concluída")
                 }
                 Spacer(Modifier.padding(4.dp))
-                Button({
+                Button(modifier = Modifier.fillMaxWidth(), onClick = {
+
                     taskViewModel.addTask(
                         TaskModel(
-                            Random.nextInt(1000, Int.MAX_VALUE),
+                            taskId,
                             title,
                             description,
                             isCompleted
