@@ -224,7 +224,7 @@ import com.apolodevsystem.todoperformance.ui.theme.AppTypography
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
-    onPrimary = onPrimaryLight,
+    onPrimary = secondaryContainerLight,
     primaryContainer = primaryContainerLight,
     onPrimaryContainer = onPrimaryContainerLight,
     secondary = secondaryLight,
