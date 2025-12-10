@@ -224,7 +224,7 @@ import com.apolodevsystem.todoperformance.ui.theme.AppTypography
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
-    onPrimary = secondaryContainerLight,
+    onPrimary = onPrimaryLight,
     primaryContainer = primaryContainerLight,
     onPrimaryContainer = onPrimaryContainerLight,
     secondary = secondaryLight,
@@ -470,11 +470,6 @@ fun AppTheme(
     content: @Composable() () -> Unit
 ) {
   val colorScheme = when {
-      dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-          val context = LocalContext.current
-          if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-      }
-      
       darkTheme -> darkScheme
       else -> lightScheme
   }
