@@ -195,7 +195,7 @@ fun GreetingPreview() {
             }
 
         }) { innerPadding ->
-
+            innerPadding.calculateTopPadding()
             ItemsList(
                 listOf(
                     TaskModel(1, "Task 1", "Description for Task 1", false),

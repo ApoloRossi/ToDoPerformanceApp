@@ -63,10 +63,10 @@ fun TaskScreenComponent(
             }
         }
 
-        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+        Scaffold(modifier = Modifier.fillMaxSize().padding(16.dp)) { innerPadding ->
             Column(Modifier
                 .fillMaxSize()
-                .padding(16.dp)) {
+                .padding(innerPadding)) {
                 Text("Create Task", fontSize = 32.sp)
 
                 Spacer(Modifier.padding(4.dp))
