@@ -23,5 +23,8 @@ jobs:
         with:
           java-version: 17
 
+      - name: Run Lint
+        run: ./gradlew :app:lintDebug
+
       - name: Build with Gradle
         run: chmod +x ./gradlew && ./gradlew assembleDebug
