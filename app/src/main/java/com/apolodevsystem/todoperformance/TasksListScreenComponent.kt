@@ -45,11 +45,13 @@ import com.apolodevsystem.todoperformance.ui.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TasksListScreenComponent(navController: NavController, taskViewModel: TaskViewModel) {
+fun TasksListScreenComponent(navController: NavController,
+                             taskViewModel: TaskViewModel) {
     AppTheme {
 
         var showBottomSheet by remember { mutableStateOf(false) }
         val sheetState = rememberModalBottomSheetState()
+        var taskId = 0
 
         Scaffold(modifier = Modifier.fillMaxSize(), {
             TopAppBar(
@@ -62,6 +64,7 @@ fun TasksListScreenComponent(navController: NavController, taskViewModel: TaskVi
         }, floatingActionButton = {
             FloatingActionButton(onClick = {
                 showBottomSheet = true
+                taskId = 0
             }) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -87,9 +90,11 @@ fun TasksListScreenComponent(navController: NavController, taskViewModel: TaskVi
                     ItemsList(
                         tasks,
                         modifier = Modifier.padding(innerPadding),
-                        navController = navController
-                    ) {
-                        taskViewModel.removeTask(it)
+                        navController = navController,
+                        removeItemClicked = { taskViewModel.removeTask(it)}
+                    ) { task ->
+                        taskId = task
+                        showBottomSheet = true
                     }
                 }
             }
@@ -101,8 +106,9 @@ fun TasksListScreenComponent(navController: NavController, taskViewModel: TaskVi
                     },
                     sheetState = sheetState
                 ) {
-                    TaskScreenComponent(0, taskViewModel) {
+                    TaskScreenComponent(taskId, taskViewModel) {
                         showBottomSheet = false
+                        taskId = 0
                     }
                 }
             }
@@ -115,7 +121,8 @@ fun ItemsList(
     tasks: List<TaskModel>,
     modifier: Modifier = Modifier,
     navController: NavController,
-    itemClicked: (TaskModel) -> Unit
+    removeItemClicked: (TaskModel) -> Unit,
+    onItemClicked: (Int) -> Unit
 ) {
     LazyColumn(modifier = modifier.fillMaxSize(), contentPadding = PaddingValues(8.dp)) {
         tasks.forEach { task ->
@@ -133,7 +140,7 @@ fun ItemsList(
                             .fillMaxWidth()
                             .padding(16.dp)
                             .clickable {
-                                navController.navigate(Routes.TaskScreen.buildRoute(task.id))
+                                onItemClicked(task.id)
                             }
                     ) {
                         Column(
@@ -152,7 +159,7 @@ fun ItemsList(
                                 .align(Alignment.CenterVertically)
                                 .padding(end = 16.dp),
                             onClick = {
-                                itemClicked(task)
+                                removeItemClicked(task)
                             }
                         )
                     }
@@ -195,10 +202,10 @@ fun GreetingPreview() {
                     TaskModel(2, "Task 2", "Description for Task 2", true),
                     TaskModel(3, "Task 3", "Description for Task 3", false),
                 ),
-                navController = navController
-            ) {
-
-            }
+                navController = navController,
+                onItemClicked = {},
+                removeItemClicked = {}
+            )
 
         }
     }
