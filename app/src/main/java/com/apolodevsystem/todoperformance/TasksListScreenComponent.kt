@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -60,14 +62,19 @@ fun TasksListScreenComponent(navController: NavController,
         val sheetState = rememberModalBottomSheetState()
         var taskId = 0
 
+        val textFieldState = rememberTextFieldState()
+        var tasks : List<TaskModel> = listOf()
+
         Scaffold(modifier = Modifier.fillMaxSize(), topBar =  {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
-                title = { Text(text = "ToDo Performance") }
+            SimpleSearchBar(
+                textFieldState,
+                onSearch = {
+
+                },
+                searchResults = tasks
             )
+
+
         }, floatingActionButton = {
             FloatingActionButton(onClick = {
                 showBottomSheet = true
@@ -93,7 +100,7 @@ fun TasksListScreenComponent(navController: NavController,
                 }
 
                 is TasksState.Success -> {
-                    val tasks = state.tasks
+                    tasks = state.tasks
                     ItemsList(
                         tasks,
                         modifier = Modifier.padding(innerPadding),
