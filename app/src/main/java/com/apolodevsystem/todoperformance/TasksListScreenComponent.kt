@@ -115,6 +115,8 @@ fun TasksListScreenComponent(navController: NavController,
 
             if(showBottomSheet) {
                 ModalBottomSheet(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.surface,
                     onDismissRequest = {
                         showBottomSheet = false
                     },
