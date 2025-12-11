@@ -1,7 +1,5 @@
 package com.apolodevsystem.todoperformance.routes
 
-import com.apolodevsystem.todoperformance.TaskModel
-
 sealed class Routes(val route : String) {
 
     data object TaskList : Routes("taskList")

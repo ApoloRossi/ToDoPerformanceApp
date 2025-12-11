@@ -19,12 +19,19 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,8 +45,14 @@ import com.apolodevsystem.todoperformance.ui.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TasksListScreenComponent(navController: NavController, taskViewModel: TaskViewModel) {
+fun TasksListScreenComponent(navController: NavController,
+                             taskViewModel: TaskViewModel) {
     AppTheme {
+
+        var showBottomSheet by remember { mutableStateOf(false) }
+        val sheetState = rememberModalBottomSheetState()
+        var taskId = 0
+
         Scaffold(modifier = Modifier.fillMaxSize(), {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -50,7 +63,8 @@ fun TasksListScreenComponent(navController: NavController, taskViewModel: TaskVi
             )
         }, floatingActionButton = {
             FloatingActionButton(onClick = {
-                navController.navigate(Routes.TaskScreen.route)
+                showBottomSheet = true
+                taskId = 0
             }) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -76,9 +90,25 @@ fun TasksListScreenComponent(navController: NavController, taskViewModel: TaskVi
                     ItemsList(
                         tasks,
                         modifier = Modifier.padding(innerPadding),
-                        navController = navController
-                    ) {
-                        taskViewModel.removeTask(it)
+                        navController = navController,
+                        removeItemClicked = { taskViewModel.removeTask(it)}
+                    ) { task ->
+                        taskId = task
+                        showBottomSheet = true
+                    }
+                }
+            }
+
+            if(showBottomSheet) {
+                ModalBottomSheet(
+                    onDismissRequest = {
+                        showBottomSheet = false
+                    },
+                    sheetState = sheetState
+                ) {
+                    TaskScreenComponent(taskId, taskViewModel) {
+                        showBottomSheet = false
+                        taskId = 0
                     }
                 }
             }
@@ -91,7 +121,8 @@ fun ItemsList(
     tasks: List<TaskModel>,
     modifier: Modifier = Modifier,
     navController: NavController,
-    itemClicked: (TaskModel) -> Unit
+    removeItemClicked: (TaskModel) -> Unit,
+    onItemClicked: (Int) -> Unit
 ) {
     LazyColumn(modifier = modifier.fillMaxSize(), contentPadding = PaddingValues(8.dp)) {
         tasks.forEach { task ->
@@ -109,7 +140,7 @@ fun ItemsList(
                             .fillMaxWidth()
                             .padding(16.dp)
                             .clickable {
-                                navController.navigate(Routes.TaskScreen.buildRoute(task.id))
+                                onItemClicked(task.id)
                             }
                     ) {
                         Column(
@@ -128,7 +159,7 @@ fun ItemsList(
                                 .align(Alignment.CenterVertically)
                                 .padding(end = 16.dp),
                             onClick = {
-                                itemClicked(task)
+                                removeItemClicked(task)
                             }
                         )
                     }
@@ -164,17 +195,17 @@ fun GreetingPreview() {
             }
 
         }) { innerPadding ->
-
+            innerPadding.calculateTopPadding()
             ItemsList(
                 listOf(
                     TaskModel(1, "Task 1", "Description for Task 1", false),
                     TaskModel(2, "Task 2", "Description for Task 2", true),
                     TaskModel(3, "Task 3", "Description for Task 3", false),
                 ),
-                navController = navController
-            ) {
-
-            }
+                navController = navController,
+                onItemClicked = {},
+                removeItemClicked = {}
+            )
 
         }
     }
