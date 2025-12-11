@@ -98,7 +98,11 @@ fun TaskScreenComponent(
                     }
                 )
 
-                Text(modifier = Modifier.padding(8.dp), text = "Complete")
+                Text(
+                    modifier = Modifier.padding(8.dp),
+                    text = "Complete",
+                    color = MaterialTheme.colorScheme.scrim
+                )
             }
             Spacer(Modifier.padding(4.dp))
             Button(modifier = Modifier.fillMaxWidth(), onClick = {
