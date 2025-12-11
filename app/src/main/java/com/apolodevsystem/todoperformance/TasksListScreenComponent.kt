@@ -1,19 +1,24 @@
 package com.apolodevsystem.todoperformance
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -21,6 +26,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 
@@ -34,6 +40,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -53,7 +60,7 @@ fun TasksListScreenComponent(navController: NavController,
         val sheetState = rememberModalBottomSheetState()
         var taskId = 0
 
-        Scaffold(modifier = Modifier.fillMaxSize(), {
+        Scaffold(modifier = Modifier.fillMaxSize(), topBar =  {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -124,15 +131,16 @@ fun ItemsList(
     removeItemClicked: (TaskModel) -> Unit,
     onItemClicked: (Int) -> Unit
 ) {
-    LazyColumn(modifier = modifier.fillMaxSize(), contentPadding = PaddingValues(8.dp)) {
+    LazyColumn(modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.primaryContainer), contentPadding = PaddingValues(8.dp)) {
         tasks.forEach { task ->
             item {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp),
+                    elevation = CardDefaults.cardElevation(8.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.inversePrimary
+                        containerColor = MaterialTheme.colorScheme.onPrimary
                     )
                 ) {
                     Row(
@@ -146,10 +154,19 @@ fun ItemsList(
                         Column(
                             modifier = Modifier.weight(1f)
                         ) {
-                            Text(task.title)
-                            Text(task.description)
-                            Text("Completed: ${task.isCompleted}")
+                            Text(task.title, style = MaterialTheme.typography.titleMedium)
+                            Spacer(Modifier.padding(4.dp))
+                            Text(task.description, style = MaterialTheme.typography.bodyMedium, maxLines = 2)
                         }
+
+                        Checkbox(
+                            modifier = Modifier.weight(0.5f)
+                                .align(Alignment.CenterVertically).height(8.dp),
+                            checked = task.isCompleted,
+                            onCheckedChange = {
+
+                            }
+                        )
 
                         IconButton(
                             content = {
@@ -198,8 +215,8 @@ fun GreetingPreview() {
             innerPadding.calculateTopPadding()
             ItemsList(
                 listOf(
-                    TaskModel(1, "Task 1", "Description for Task 1", false),
-                    TaskModel(2, "Task 2", "Description for Task 2", true),
+                    TaskModel(1, "Task 1", "Description for Task 1, Description for Task 1,Description for Task 1, Description for Task 1", false),
+                    TaskModel(2, "Task 2", "Description for Task 1, Description for Task 1,Description for Task 1, Description for Task 1", true),
                     TaskModel(3, "Task 3", "Description for Task 3", false),
                 ),
                 navController = navController,
