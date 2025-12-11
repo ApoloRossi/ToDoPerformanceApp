@@ -1,4 +1,4 @@
-# 📱 ToDo Performance App
+# 📱 GoalTracker App
 
 Aplicativo Android desenvolvido com **Kotlin + Jetpack Compose**, focado em **arquitetura limpa, performance e estados reativos**.  
 Permite criar, listar, atualizar e remover tarefas com uma interface moderna e responsiva.
