@@ -3,6 +3,7 @@ package com.apolodevsystem.todoperformance
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -45,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -54,8 +56,10 @@ import com.apolodevsystem.todoperformance.ui.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TasksListScreenComponent(navController: NavController,
-                             taskViewModel: TaskViewModel) {
+fun TasksListScreenComponent(
+    navController: NavController,
+    taskViewModel: TaskViewModel
+) {
     AppTheme {
 
         var showBottomSheet by remember { mutableStateOf(false) }
@@ -63,18 +67,28 @@ fun TasksListScreenComponent(navController: NavController,
         var taskId = 0
 
         val textFieldState = rememberTextFieldState()
-        var tasks : List<TaskModel> = listOf()
+        var tasks: List<TaskModel> = listOf()
 
-        Scaffold(modifier = Modifier.fillMaxSize(), topBar =  {
-            SimpleSearchBar(
-                textFieldState,
-                onSearch = {
+        Scaffold(modifier = Modifier.fillMaxSize(), {
+            Column(Modifier.background(MaterialTheme.colorScheme.primaryContainer).fillMaxWidth(),
+                verticalArrangement = Arrangement.Top) {
+                Text(
+                    "Olá Apolo",
+                    modifier = Modifier.padding(start = 16.dp, top = 32.dp),
+                    style = MaterialTheme.typography.headlineLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 36.sp
+                    )
+                )
+                SimpleSearchBar(
+                    textFieldState,
+                    onSearch = {
 
-                },
-                searchResults = tasks
-            )
-
-
+                    },
+                    searchResults = tasks
+                )
+            }
         }, floatingActionButton = {
             FloatingActionButton(onClick = {
                 showBottomSheet = true
@@ -87,44 +101,53 @@ fun TasksListScreenComponent(navController: NavController,
             }
 
         }) { innerPadding ->
-            val state = taskViewModel.tasksFlow.collectAsStateWithLifecycle().value
-            when (state) {
-                is TasksState.Loading -> {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding)
+            // Colocamos o header (Texto + SearchBar) dentro do conteúdo do Scaffold para evitar comportamentos inesperados
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .padding(innerPadding),
+                verticalArrangement = Arrangement.Top
+            ) {
+
+                val state = taskViewModel.tasksFlow.collectAsStateWithLifecycle().value
+                when (state) {
+                    is TasksState.Loading -> {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                        ) {
+                            Text("Loading...", modifier = Modifier.padding(16.dp))
+                        }
+                    }
+
+                    is TasksState.Success -> {
+                        tasks = state.tasks
+                        ItemsList(
+                            tasks,
+                            modifier = Modifier,
+                            navController = navController,
+                            removeItemClicked = { taskViewModel.removeTask(it) }
+                        ) { task ->
+                            taskId = task
+                            showBottomSheet = true
+                        }
+                    }
+                }
+
+                if (showBottomSheet) {
+                    ModalBottomSheet(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        contentColor = MaterialTheme.colorScheme.surface,
+                        onDismissRequest = {
+                            showBottomSheet = false
+                        },
+                        sheetState = sheetState
                     ) {
-                        Text("Loading...", modifier = Modifier.padding(16.dp))
-                    }
-                }
-
-                is TasksState.Success -> {
-                    tasks = state.tasks
-                    ItemsList(
-                        tasks,
-                        modifier = Modifier.padding(innerPadding),
-                        navController = navController,
-                        removeItemClicked = { taskViewModel.removeTask(it)}
-                    ) { task ->
-                        taskId = task
-                        showBottomSheet = true
-                    }
-                }
-            }
-
-            if(showBottomSheet) {
-                ModalBottomSheet(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    contentColor = MaterialTheme.colorScheme.surface,
-                    onDismissRequest = {
-                        showBottomSheet = false
-                    },
-                    sheetState = sheetState
-                ) {
-                    TaskScreenComponent(taskId, taskViewModel) {
-                        showBottomSheet = false
-                        taskId = 0
+                        TaskScreenComponent(taskId, taskViewModel) {
+                            showBottomSheet = false
+                            taskId = 0
+                        }
                     }
                 }
             }
@@ -140,7 +163,12 @@ fun ItemsList(
     removeItemClicked: (TaskModel) -> Unit,
     onItemClicked: (Int) -> Unit
 ) {
-    LazyColumn(modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.primaryContainer), contentPadding = PaddingValues(8.dp)) {
+    LazyColumn(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.primaryContainer),
+        contentPadding = PaddingValues(8.dp)
+    ) {
         tasks.forEach { task ->
             item {
                 Card(
@@ -165,12 +193,18 @@ fun ItemsList(
                         ) {
                             Text(task.title, style = MaterialTheme.typography.titleMedium)
                             Spacer(Modifier.padding(4.dp))
-                            Text(task.description, style = MaterialTheme.typography.bodyMedium, maxLines = 2)
+                            Text(
+                                task.description,
+                                style = MaterialTheme.typography.bodyMedium,
+                                maxLines = 2
+                            )
                         }
 
                         Checkbox(
-                            modifier = Modifier.weight(0.5f)
-                                .align(Alignment.CenterVertically).height(8.dp),
+                            modifier = Modifier
+                                .weight(0.5f)
+                                .align(Alignment.CenterVertically)
+                                .height(8.dp),
                             checked = task.isCompleted,
                             onCheckedChange = {
 
@@ -196,20 +230,34 @@ fun ItemsList(
 }
 
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     AppTheme {
+        val textFieldState = rememberTextFieldState()
+        var tasks: List<TaskModel> = listOf()
         val navController = rememberNavController()
         Scaffold(modifier = Modifier.fillMaxSize(), {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
-                title = { Text(text = "ToDo Performance") }
-            )
+            Column(Modifier.background(MaterialTheme.colorScheme.primaryContainer).fillMaxWidth()) {
+                Text(
+                    "Olá Apolo",
+                    modifier = Modifier.padding(start = 16.dp, top = 8.dp),
+                    style = MaterialTheme.typography.headlineLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 36.sp
+                    )
+                )
+                SimpleSearchBar(
+                    textFieldState,
+                    onSearch = {
+
+                    },
+                    searchResults = tasks
+                )
+            }
         }, floatingActionButton = {
             FloatingActionButton(onClick = {
                 navController.navigate("taskScreen")
@@ -224,8 +272,18 @@ fun GreetingPreview() {
             innerPadding.calculateTopPadding()
             ItemsList(
                 listOf(
-                    TaskModel(1, "Task 1", "Description for Task 1, Description for Task 1,Description for Task 1, Description for Task 1", false),
-                    TaskModel(2, "Task 2", "Description for Task 1, Description for Task 1,Description for Task 1, Description for Task 1", true),
+                    TaskModel(
+                        1,
+                        "Task 1",
+                        "Description for Task 1, Description for Task 1,Description for Task 1, Description for Task 1",
+                        false
+                    ),
+                    TaskModel(
+                        2,
+                        "Task 2",
+                        "Description for Task 1, Description for Task 1,Description for Task 1, Description for Task 1",
+                        true
+                    ),
                     TaskModel(3, "Task 3", "Description for Task 3", false),
                 ),
                 navController = navController,

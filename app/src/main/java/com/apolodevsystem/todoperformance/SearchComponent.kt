@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.input.TextFieldState
@@ -24,13 +25,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
-import com.google.android.material.color.MaterialColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,14 +44,16 @@ fun SimpleSearchBar(
     Box(
         modifier
             .background(MaterialTheme.colorScheme.primaryContainer)
+            .padding(start = 16.dp, end = 16.dp, bottom = 8.dp, top = 0.dp)
             .fillMaxWidth()
-            .padding(8.dp)
             .semantics { isTraversalGroup = true }
     ) {
         SearchBar(
             modifier = Modifier
-                .align(Alignment.TopCenter)
-                .semantics { traversalIndex = 0f },
+                .fillMaxWidth()
+                .padding(top = 0.dp)
+                // define altura fixa para evitar espaçamento imprevisível em runtime
+                .height(56.dp),
             inputField = {
                 SearchBarDefaults.InputField(
                     colors = TextFieldDefaults.colors(
@@ -75,8 +75,8 @@ fun SimpleSearchBar(
                     placeholder = { Text("Search", color = MaterialTheme.colorScheme.onSurfaceVariant) }
                 )
             },
-            expanded = false,
-            onExpandedChange = {  },
+            expanded = expanded,
+            onExpandedChange = { expanded = it },
         ) {
             // Display search results in a scrollable column
             /* Column(Modifier.verticalScroll(rememberScrollState())) {

@@ -1,5 +1,6 @@
 package com.apolodevsystem.todoperformance
 
+import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apolodevsystem.todoperformance.states.TasksState
@@ -7,6 +8,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -17,6 +19,9 @@ class TaskViewModel : ViewModel() {
 
     private var _task: MutableStateFlow<TaskModel?> = MutableStateFlow(null)
     var taskFlow: StateFlow<TaskModel?> = _task.asStateFlow()
+
+    private var _user: MutableStateFlow<String> = MutableStateFlow("")
+    var user: StateFlow<String> = _user.asStateFlow()
 
     init {
         getTasks()
@@ -38,6 +43,15 @@ class TaskViewModel : ViewModel() {
 
             _tasks.value = TasksState.Success(internalTasks.toList())
         }
+    }
+
+    fun getUserName(dataStore: DataStore<String>): String {
+        var name = "User"
+        viewModelScope.launch {
+            name = dataStore.data.first()
+            _user.value = name
+        }
+        return name
     }
 
     fun addTask(taskModel: TaskModel) {

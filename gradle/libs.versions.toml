@@ -14,6 +14,7 @@ activity = "1.11.0"
 navVersion = "2.9.5"
 koin-bom = "4.1.1"
 fonts-version = "1.9.3"
+data-store-version = "1.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -45,6 +46,7 @@ koin-navigation = { module = "io.insert-koin:koin-androidx-compose-navigation", 
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin-bom" }
 koin-core-coroutines = { module = "io.insert-koin:koin-core-coroutines", version.ref = "koin-bom" }
 google-fonts = {module = "androidx.compose.ui:ui-text-google-fonts", version.ref = "fonts-version" }
+data-store={ module = "androidx.datastore:datastore-preferences", version.ref = "data-store-version"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
