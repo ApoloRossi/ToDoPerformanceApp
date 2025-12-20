@@ -17,15 +17,15 @@ val Context.dataStore by preferencesDataStore(
 val USER_NAME = stringPreferencesKey("user_name")
 
 class DataStoreManager(private val context: WeakReference<Context>) {
-    suspend fun createUser() {
+    suspend fun createUser(userName : String) {
         context.get()?.dataStore?.edit { preferences ->
-            preferences[USER_NAME] = "Apolo"
+            preferences[USER_NAME] = userName
         }
     }
 
     suspend fun getUserName(): String {
         val preferences = context.get()?.dataStore?.data?.first()
-        return preferences?.get(USER_NAME) ?: "User"
+        return preferences?.get(USER_NAME) ?: ""
     }
 
 }
