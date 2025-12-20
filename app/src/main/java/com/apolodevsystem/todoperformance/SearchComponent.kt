@@ -12,7 +12,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
@@ -51,7 +55,6 @@ fun SimpleSearchBar(
         SearchBar(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 0.dp)
                 // define altura fixa para evitar espaçamento imprevisível em runtime
                 .height(56.dp),
             inputField = {
@@ -65,13 +68,20 @@ fun SimpleSearchBar(
                         focusedPlaceholderColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
                         unfocusedPlaceholderColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
                     ),
+                    leadingIcon = {
+                        Icon(imageVector = Icons.Default.Search, "")
+
+                    },
+                    trailingIcon = {
+                        Icon(imageVector = Icons.Default.Clear, "")
+                    },
                     query = textFieldState.text.toString(),
                     onQueryChange = { textFieldState.edit { replace(0, length, it) } },
                     onSearch = {
                         onSearch(textFieldState.text.toString())
                     },
-                    expanded = expanded,
-                    onExpandedChange = { expanded = it },
+                    expanded = false,
+                    onExpandedChange = { expanded = false },
                     placeholder = { Text("Search", color = MaterialTheme.colorScheme.onSurfaceVariant) }
                 )
             },
