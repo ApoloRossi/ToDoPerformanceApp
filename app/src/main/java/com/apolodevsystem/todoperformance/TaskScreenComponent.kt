@@ -1,17 +1,18 @@
 package com.apolodevsystem.todoperformance
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -22,7 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.apolodevsystem.todoperformance.ui.theme.AppTheme
 
@@ -63,51 +63,61 @@ fun TaskScreenComponent(
             }
         }
 
-        Scaffold(modifier = Modifier.fillMaxSize().padding(16.dp)) { innerPadding ->
-            Column(Modifier
-                .fillMaxSize()
-                .padding(innerPadding)) {
-                Text("Create Task", fontSize = 32.sp)
-
-                Spacer(Modifier.padding(4.dp))
-
-                TextField(modifier = Modifier.fillMaxWidth(), value = title, onValueChange = {
+        Column(
+            Modifier
+                .padding(8.dp)
+                .imePadding()
+                .background(MaterialTheme.colorScheme.surface)
+        ) {
+            Spacer(Modifier.padding(4.dp))
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = title,
+                onValueChange = {
                     title = it
-                }, label = { Text("Título") })
+                },
+                label = { Text("Title") })
 
-                Spacer(Modifier.padding(4.dp))
+            Spacer(Modifier.padding(4.dp))
 
-                TextField(modifier = Modifier.fillMaxWidth(), value = description, onValueChange = {
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = description,
+                onValueChange = {
                     description = it
-                }, label = { Text("Descrição") })
+                },
+                label = { Text("Description") })
 
-                Spacer(Modifier.padding(4.dp))
+            Spacer(Modifier.padding(4.dp))
 
-                Row(Modifier, verticalAlignment = Alignment.CenterVertically) {
-                    Switch(
-                        checked = isCompleted,
-                        onCheckedChange = {
-                            isCompleted = it
-                        }
+            Row(Modifier, verticalAlignment = Alignment.CenterVertically) {
+                Switch(
+                    checked = isCompleted,
+                    onCheckedChange = {
+                        isCompleted = it
+                    }
+                )
+
+                Text(
+                    modifier = Modifier.padding(8.dp),
+                    text = "Complete",
+                    color = MaterialTheme.colorScheme.scrim
+                )
+            }
+            Spacer(Modifier.padding(4.dp))
+            Button(modifier = Modifier.fillMaxWidth(), onClick = {
+
+                taskViewModel.addTask(
+                    TaskModel(
+                        taskId,
+                        title,
+                        description,
+                        isCompleted
                     )
-
-                    Text(modifier = Modifier.padding(8.dp), text = "Concluída")
-                }
-                Spacer(Modifier.padding(4.dp))
-                Button(modifier = Modifier.fillMaxWidth(), onClick = {
-
-                    taskViewModel.addTask(
-                        TaskModel(
-                            taskId,
-                            title,
-                            description,
-                            isCompleted
-                        )
-                    )
-                    onSave()
-                }) {
-                    Text("Salvar")
-                }
+                )
+                onSave()
+            }) {
+                Text("Save")
             }
         }
     }
